@@ -16,6 +16,7 @@
     <module>hazelcastmq-stomper</module>
     <module>hazelcastmq-stompee</module>
     <module>hazelcastmq-stomp-shared</module>
+    <module>hazelcastmq-rar</module>
   </modules>
 
   <name>HazelcastMQ</name>
