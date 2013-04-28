@@ -3,7 +3,12 @@ package org.mpilone.hazelcastmq;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
 
+import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
 /**
@@ -12,7 +17,7 @@ import com.hazelcast.core.HazelcastInstance;
  * 
  * @author mpilone
  */
-public class HazelcastMQConnectionFactory implements ConnectionFactory {
+public class HazelcastMQConnectionFactory implements ConnectionFactory, QueueConnectionFactory, TopicConnectionFactory {
 
   /**
    * The Hazelcast instance to use for all created connections.
@@ -29,7 +34,7 @@ public class HazelcastMQConnectionFactory implements ConnectionFactory {
    * configuration. The Hazelcast instance must be set before use.
    */
   public HazelcastMQConnectionFactory() {
-    this(null, new HazelcastMQConfig());
+    this(Hazelcast.newHazelcastInstance(), new HazelcastMQConfig());
   }
 
   /**
@@ -67,6 +72,28 @@ public class HazelcastMQConnectionFactory implements ConnectionFactory {
   public Connection createConnection(String username, String password)
       throws JMSException {
     return new HazelcastMQConnection(this);
+  }
+  
+  @Override
+  public TopicConnection createTopicConnection() throws JMSException {
+	  return (TopicConnection) createConnection();
+  }
+
+  @Override
+  public TopicConnection createTopicConnection(String userName, String password)
+		throws JMSException {
+	return (TopicConnection) createConnection(userName, password);
+  }
+
+  @Override
+  public QueueConnection createQueueConnection() throws JMSException {
+	return (QueueConnection) createConnection();
+  }
+
+  @Override
+  public QueueConnection createQueueConnection(String userName, String password)
+		throws JMSException {
+	  return (QueueConnection) createConnection(userName, password);
   }
 
   /**

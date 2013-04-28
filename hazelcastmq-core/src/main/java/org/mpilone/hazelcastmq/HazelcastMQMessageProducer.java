@@ -2,6 +2,7 @@ package org.mpilone.hazelcastmq;
 
 import static java.lang.String.format;
 
+import java.beans.DesignMode;
 import java.io.IOException;
 
 import javax.jms.*;
@@ -14,7 +15,7 @@ import com.hazelcast.core.IdGenerator;
  * 
  * @author mpilone
  */
-public class HazelcastMQMessageProducer implements MessageProducer {
+public class HazelcastMQMessageProducer implements MessageProducer, QueueSender {
 
   /**
    * The parent session.
@@ -306,6 +307,21 @@ public class HazelcastMQMessageProducer implements MessageProducer {
   @Override
   public void setTimeToLive(long timeToLive) throws JMSException {
     this.timeToLive = timeToLive;
+  }
+
+  @Override
+  public Queue getQueue() throws JMSException {
+	return (Queue) getDestination();
+  }
+
+  @Override
+  public void send(Queue queue, Message message) throws JMSException {
+	  send((Destination)queue, message);
+  }
+
+  @Override
+  public void send(Queue queue, Message message, int deliveryMode, int priority, long timeToLive) throws JMSException {
+	  send((Destination)queue, message, deliveryMode, priority, timeToLive);
   }
 
 }

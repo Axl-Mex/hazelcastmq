@@ -42,16 +42,20 @@ public class HazelcastMQQueue implements Queue {
   public HazelcastMQQueue(String queueName) {
     this(null, queueName);
   }
+  
+  public HazelcastMQQueue() {
+	this(null, null);
+  }
+	
 
   public void setSession(HazelcastMQSession session) {
     this.session = session;
   }
+  
+  public void setQueueName(String queueName) {
+	this.queueName = queueName;
+  }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see javax.jms.Queue#getQueueName()
-   */
   @Override
   public String getQueueName() throws JMSException {
     return queueName;

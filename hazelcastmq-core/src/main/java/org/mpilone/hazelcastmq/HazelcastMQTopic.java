@@ -42,6 +42,11 @@ public class HazelcastMQTopic implements Topic {
   public HazelcastMQTopic(String topicName) {
     this(null, topicName);
   }
+  
+  public HazelcastMQTopic()
+  {
+	this(null, null);
+  }
 
   /**
    * Sets the parent session of this topic. Normally this method is not needed
@@ -52,6 +57,11 @@ public class HazelcastMQTopic implements Topic {
    */
   public void setSession(HazelcastMQSession session) {
     this.session = session;
+  }
+  
+  
+  public void setTopicName(String topicName) {
+	this.topicName = topicName;
   }
 
   /*

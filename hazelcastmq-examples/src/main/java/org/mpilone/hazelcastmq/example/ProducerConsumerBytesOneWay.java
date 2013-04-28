@@ -43,8 +43,7 @@ public class ProducerConsumerBytesOneWay {
       // Create a connection, session, and destinations.
       Connection connection = connectionFactory.createConnection();
       connection.start();
-      Session session = connection.createSession(false,
-          Session.AUTO_ACKNOWLEDGE);
+      Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
       Destination requestDest = session.createQueue("foo.bar");
 
       // Create a request producer and reply consumer.
@@ -56,6 +55,8 @@ public class ProducerConsumerBytesOneWay {
       BytesMessage msg = session.createBytesMessage();
       msg.writeBytes(data);
       producer1.send(msg);
+      
+      session.commit();
 
       msg = (BytesMessage) consumer1.receive(2000);
       Assert.notNull(msg, "Did not get required message.");
@@ -73,7 +74,7 @@ public class ProducerConsumerBytesOneWay {
       connection.close();
     }
     finally {
-      hazelcast.getLifecycleService().shutdown();
+      Hazelcast.shutdownAll();
     }
   }
 }

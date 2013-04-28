@@ -19,7 +19,7 @@ import com.hazelcast.core.IdGenerator;
  * 
  * @author mpilone
  */
-public class HazelcastMQSession implements Session {
+public class HazelcastMQSession implements Session, QueueSession, TopicSession {
 
   /**
    * The parent connection.
@@ -478,8 +478,10 @@ public class HazelcastMQSession implements Session {
    * @see javax.jms.Session#setMessageListener(javax.jms.MessageListener)
    */
   @Override
-  public void setMessageListener(MessageListener arg0) throws JMSException {
-    throw new UnsupportedOperationException();
+  public void setMessageListener(MessageListener listener) throws JMSException {
+	if (listener != null) {
+		throw new UnsupportedOperationException();
+	}
   }
 
   /*
@@ -545,6 +547,37 @@ public class HazelcastMQSession implements Session {
     for (HazelcastMQMessageConsumer consumer : consumers) {
       consumer.stop();
     }
+  }
+
+  @Override
+  public TopicSubscriber createSubscriber(Topic topic) throws JMSException {
+	  return (TopicSubscriber) createConsumer(topic);
+  }
+
+  @Override
+  public TopicSubscriber createSubscriber(Topic topic, String messageSelector, boolean noLocal) throws JMSException {
+	  return (TopicSubscriber) createConsumer(topic, messageSelector, noLocal);
+  }
+
+  @Override
+  public TopicPublisher createPublisher(Topic topic) throws JMSException {
+	  throw new UnsupportedOperationException("Not implemented yet");
+  }
+
+  @Override
+  public QueueReceiver createReceiver(Queue queue) throws JMSException {
+	  return (QueueReceiver) createConsumer(queue);
+  }
+
+  @Override
+  public QueueReceiver createReceiver(Queue queue, String messageSelector)
+		throws JMSException {
+	  return (QueueReceiver) createConsumer(queue, messageSelector);
+  }
+
+  @Override
+  public QueueSender createSender(Queue queue) throws JMSException {
+	  return (QueueSender) createProducer(queue);
   }
 
 }

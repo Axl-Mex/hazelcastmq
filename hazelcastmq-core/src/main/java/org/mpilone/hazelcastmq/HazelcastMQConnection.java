@@ -12,7 +12,7 @@ import com.hazelcast.core.HazelcastInstance;
  * 
  * @author mpilone
  */
-public class HazelcastMQConnection implements Connection {
+public class HazelcastMQConnection implements Connection, QueueConnection, TopicConnection {
 
   /**
    * The owning connection factory.
@@ -254,4 +254,27 @@ public class HazelcastMQConnection implements Connection {
     }
   }
 
+  @Override
+  public QueueSession createQueueSession(boolean transacted, int acknowledgeMode)
+		throws JMSException {
+	return (QueueSession) createSession(transacted, acknowledgeMode);
+  }
+
+  @Override
+  public ConnectionConsumer createConnectionConsumer(Queue queue, String messageSelector, ServerSessionPool sessionPool, int maxMessages)
+		throws JMSException {
+	  return createConnectionConsumer((Destination)queue, messageSelector, sessionPool, maxMessages);
+  }
+
+  @Override
+  public TopicSession createTopicSession(boolean transacted, int acknowledgeMode)
+		throws JMSException {
+	return (TopicSession) createSession(transacted, acknowledgeMode);
+  }
+
+  @Override
+  public ConnectionConsumer createConnectionConsumer(Topic topic, String messageSelector, ServerSessionPool sessionPool, int maxMessages)
+		throws JMSException {
+	  return createConnectionConsumer((Destination)topic, messageSelector, sessionPool, maxMessages);
+  }
 }
